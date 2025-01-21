@@ -57,6 +57,7 @@
 @section('script')
     <script>
         $(document).ready(function() {
+            let dialog = '';
             $(document).on('click', '#BootModalShow', function(e) {
                 e.preventDefault();
 
@@ -69,23 +70,60 @@
                     type: 'GET',
                     url: ModalUrl,
                     success: function(res) {
-                        let dialog = bootbox.dialog({
+                         dialog = bootbox.dialog({
                             title: 'Student Create',
 
                             //adding modal content
                             message: "<div class='ModalContent'> </div>",
 
                             size: 'large',
-                            
-                           //**delete bootbox button use form button**
+
+                            //**delete bootbox button use form button**
                         });
                         $('.ModalContent').html(res);
                     }
                 });
-
-
-
             });
+
+
+
+            $(document).on('submit', '#createStudentForm', function(e) {
+    e.preventDefault(); // ফর্ম সাবমিট বন্ধ করলাম
+
+    let formData = new FormData($('#createStudentForm')[0]); // ফর্ম ডেটা তৈরি করলাম
+
+    $.ajax({
+        type: "POST", // POST রিকোয়েস্ট
+        url: "{{ route('students.store') }}", // রুট URL
+        data: formData, // ফর্ম ডেটা পাঠানো
+        processData: false, // প্রক্রিয়াকরণ বন্ধ করলাম
+        contentType: false, // Content-Type বন্ধ করলাম
+        success: function(res) {
+            if (res.status === 400) { // যদি স্ট্যাটাস 400 হয় (ভ্যালিডেশন ত্রুটি)
+                $('.errors').html(''); // পুরনো ত্রুটি ক্লিয়ার করলাম
+                $('.errors').removeClass('d-none'); // ত্রুটি দেখানোর জন্য ক্লাস সরালাম
+
+                if (res.errors.name) {
+                    $('.nameError').text(res.errors.name); // name ত্রুটি দেখানো
+                }
+                if (res.errors.email) {
+                    $('.emailError').text(res.errors.email); // email ত্রুটি দেখানো
+                }
+                if (res.errors.photo) {
+                    $('.photoError').text(res.errors.photo); // photo ত্রুটি দেখানো
+                }
+            } else {
+                $('.errors').html(''); // ত্রুটি ক্লিয়ার
+                $('.errors').addClass('d-none'); // ত্রুটি লুকানোর জন্য ক্লাস যোগ
+                dialog.modal('hide'); // মডাল ছাড়ানো
+            }
+        }
+    });
+});
+
+
+
+
         });
     </script>
 @endsection

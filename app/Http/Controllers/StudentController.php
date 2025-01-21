@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
 {
@@ -27,7 +29,48 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //dd('this is store methos');
+        $validator = Validator::make($request->all(),[
+            'name' => 'required',
+            'email' => 'nullable|unique:students,email',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+        //এই জায়গা IF Else করব। যদি validate হলে কি করবো আর না হলে কি করব
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => 400,
+                'errors' => $validator->messages()
+
+            ]);
+        }else
+        {
+            $student = new Student();
+            $student->name = $request->name;
+            $student->email = $request->email;
+
+            //photo
+            if($request->file('photo'))
+            {
+                $file = $request->file('photo');
+                $extension = $file->getClientOriginalExtension();
+                $filename = time().'.'.$extension;
+                $file->move(public_path('upload/students'),$filename);
+            }
+
+            $student->photo = $filename;
+            $student->save();
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Data Inserted Successfully'
+
+            ]);
+
+        }
+
+
+
     }
 
     /**
