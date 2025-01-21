@@ -6,7 +6,8 @@
                 <h2>Student Create</h2>
             </div>
             <div class="col ">
-                <button id="BootModalShow" class="btn btn-primary float-end">Add Student</button>
+
+                <a href="{{ route('students.create') }}" class="btn btn-primary float-end" id="BootModalShow">Add Student</a>
             </div>
         </div>
         {{-- Table --}}
@@ -54,32 +55,37 @@
 
 
 @section('script')
-<script>
-    $(document).ready(function () {
-        $(document).on('click', '#BootModalShow', function (e) {
-            e.preventDefault();
-            let dialog = bootbox.dialog({
-    title: 'A custom dialog with buttons and callbacks',
-    message: "<p>This dialog has buttons. Each button has it's own callback function.</p>",
-    size: 'large',
-    buttons: {
-        cancel: {
-            label: "I'm a cancel button!",
-            className: 'btn-danger',
-            callback: function(){
-                console.log('Custom cancel clicked');
-            }
-        },
-        ok: {
-            label: "I'm an OK button!",
-            className: 'btn-info',
-            callback: function(){
-                console.log('Custom OK clicked');
-            }
-        }
-    }
-});
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '#BootModalShow', function(e) {
+                e.preventDefault();
+
+                let ModalUrl = $(this).attr('href');
+                //যদি #BootModalShow এই id টা যে খানে আছে তার this বাহহার হয়েছে। তার href
+                // check করলাম alert(ModalUrl);
+
+                // calling ajax for showing modal for create
+                $.ajax({
+                    type: 'GET',
+                    url: ModalUrl,
+                    success: function(res) {
+                        let dialog = bootbox.dialog({
+                            title: 'Student Create',
+
+                            //adding modal content
+                            message: "<div class='ModalContent'> </div>",
+
+                            size: 'large',
+                            
+                           //**delete bootbox button use form button**
+                        });
+                        $('.ModalContent').html(res);
+                    }
+                });
+
+
+
+            });
         });
-    });
-</script>
+    </script>
 @endsection
