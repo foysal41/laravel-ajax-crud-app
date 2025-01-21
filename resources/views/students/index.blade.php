@@ -13,7 +13,8 @@
         {{-- Table --}}
         <div class="row mt-5 justify-content-center">
             <div class="col-md-10"> <!-- Added container for better alignment -->
-                <table class="table table-striped table-hover">
+                <div class="table_content">
+                                    <table class="table table-striped table-hover">
                     <thead class="thead-dark"> <!-- Added 'thead-dark' for better header visibility -->
                         <tr>
                             <th scope="col">ID</th>
@@ -24,13 +25,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>mark.otto@example.com</td>
+
+                        @forelse($students as $key => $student)
+
+                         <tr>
+                            <th scope="row">{{++$key}}</th>
+                            <td>{{$student->name}}</td>
+                            <td>{{$student->email}}</td>
                             <td>
-                                <img src="https://via.placeholder.com/50" alt="Profile of Mark"
-                                    class="img-fluid rounded-circle" style="width: 50px; height: 50px;">
+                                <img class="photo" style="height:50px; width: 50px; object-fit: cover;" src="{{asset('upload/students/'. $student->photo)}}" alt="P"
+                                    class="img-fluid rounded-circle" style="width: 50px;">
                             </td>
                             <td>
                                 <a href="#" class="btn btn-info" title="View Details">
@@ -45,8 +49,23 @@
                                 </a>
                             </td>
                         </tr>
+
+
+                        @empty
+
+                        <tr>
+                            <td>
+                                <b class="text-danger" colspan="5"> No Data</b>
+                            </td>
+                        </tr>
+
+                        @endforelse
+
+                       
                     </tbody>
                 </table>
+                </div>
+
             </div>
         </div>
     </div>
@@ -115,6 +134,7 @@
             } else {
                 $('.errors').html(''); // ত্রুটি ক্লিয়ার
                 $('.errors').addClass('d-none'); // ত্রুটি লুকানোর জন্য ক্লাস যোগ
+                $('.table_content').load(location.href+ ' .table_content');
                 dialog.modal('hide'); // মডাল ছাড়ানো
             }
         }

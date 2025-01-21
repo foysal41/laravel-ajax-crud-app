@@ -13,7 +13,8 @@ class StudentController extends Controller
      */
     public function index()
     {
-        return view('students.index');
+        $data['students'] = Student::all();
+        return view('students.index' , $data);
     }
 
     /**
@@ -60,6 +61,8 @@ class StudentController extends Controller
 
             $student->photo = $filename;
             $student->save();
+
+            return redirect()->route('students.index');
 
             return response()->json([
                 'status' => 200,
