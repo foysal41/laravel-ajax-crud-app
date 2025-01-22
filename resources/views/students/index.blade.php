@@ -61,7 +61,7 @@
 
                         @endforelse
 
-                       
+
                     </tbody>
                 </table>
                 </div>
@@ -140,6 +140,24 @@
         }
     });
 });
+
+
+
+
+
+$(document).on('change' , '#photo' , function(e){
+    e.preventDefault();
+    const file = this.files[0];
+
+    if(file){
+        let reader = new FileReader();
+        reader.onload = function(e){
+        $('.img_preview').attr('src', e.target.result);
+    };
+    reader.readAsDataURL(file);
+    }
+});
+
 
 
 

@@ -16,7 +16,9 @@
 
     <div class="form-group mb-3">
         <label for="photo">Photo</label>
-        <input type="file" class="form-control" id="photo" name="photo" placeholder="Password">
+        <input type="file" class="form-control" id="photo" name="photo">
+         <img src="" alt="" class="img_preview" style="height:50px; width: 50px; object-fit: cover;">
+
          <div class="photoError text-danger errors d-none"> </div>
       </div>
 
