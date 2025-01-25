@@ -25,7 +25,7 @@
 
       <div class="buttons text-end">
         {{--adding bootbox-cancle class --}}
-        <button class="btn btn-danger bootbox-cancle">Cancle</button>
+        <button type="button" class="btn btn-danger bootbox-close-button">Cancle</button>
         <button type="submit" class="btn btn-primary">Save</button>
       </div>
 

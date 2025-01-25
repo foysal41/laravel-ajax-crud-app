@@ -7,7 +7,7 @@
             </div>
             <div class="col ">
 
-                <a href="{{ route('students.create') }}" class="btn btn-primary float-end" id="BootModalShow">Add Student</a>
+                <a title="Create" href="{{ route('students.create') }}" class="btn btn-primary float-end" id="BootModalShow">Add Student</a>
             </div>
         </div>
         {{-- Table --}}
@@ -37,14 +37,14 @@
                                     class="img-fluid rounded-circle" style="width: 50px;">
                             </td>
                             <td>
-                                <a href="#" class="btn btn-info" title="View Details">
+                                <a title="View" href="#" class="btn btn-info" title="View Details">
                                     <i class="fa-regular fa-eye"></i>
                                 </a>
-                                <a href="#" class="btn btn-success" title="Edit">
+                                <a title="Edit" href="{{ route('students.edit' , $student->id) }}" id="BootModalShow" class="btn btn-success" title="Edit">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </a>
-                                <a href="#" class="btn btn-danger" title="Delete"
-                                    onclick="return confirm('Are you sure you want to delete this record?');">
+                                <a title="Delete" href="#" class="btn btn-danger" title="Delete"
+                                    onClick="return confirm('Are you sure you want to delete this record?');">
                                     <i class="fa-regular fa-trash-can"></i>
                                 </a>
                             </td>
@@ -81,6 +81,8 @@
                 e.preventDefault();
 
                 let ModalUrl = $(this).attr('href');
+                let ModalTitle = $(this).attr('title');
+                //alert(ModalUrl);
                 //যদি #BootModalShow এই id টা যে খানে আছে তার this বাহহার হয়েছে। তার href
                 // check করলাম alert(ModalUrl);
 
@@ -90,7 +92,7 @@
                     url: ModalUrl,
                     success: function(res) {
                          dialog = bootbox.dialog({
-                            title: 'Student Create',
+                            title: 'Student' + ' ' +  ModalTitle,
 
                             //adding modal content
                             message: "<div class='ModalContent'> </div>",
