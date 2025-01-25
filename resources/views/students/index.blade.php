@@ -7,7 +7,7 @@
             </div>
             <div class="col ">
 
-                <a title="Create" href="{{ route('students.create') }}" class="btn btn-primary float-end" id="BootModalShow">Add Student</a>
+                <a formActionUrl="{{ route('students.store') }}" title="Create" href="{{ route('students.create') }}" class="btn btn-primary float-end" id="BootModalShow">Add Student</a>
             </div>
         </div>
         {{-- Table --}}
@@ -40,7 +40,7 @@
                                 <a title="View" href="#" class="btn btn-info" title="View Details">
                                     <i class="fa-regular fa-eye"></i>
                                 </a>
-                                <a title="Edit" href="{{ route('students.edit' , $student->id) }}" id="BootModalShow" class="btn btn-success" title="Edit">
+                                <a formActionUrl="{{ route('students.update' , $student->id) }}" title="Edit" href="{{ route('students.edit' , $student->id) }}" id="BootModalShow" class="btn btn-success" title="Edit">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </a>
                                 <a title="Delete" href="#" class="btn btn-danger" title="Delete"
@@ -82,6 +82,8 @@
 
                 let ModalUrl = $(this).attr('href');
                 let ModalTitle = $(this).attr('title');
+                let formUrl = $(this).attr('formActionUrl');
+                
                 //alert(ModalUrl);
                 //যদি #BootModalShow এই id টা যে খানে আছে তার this বাহহার হয়েছে। তার href
                 // check করলাম alert(ModalUrl);
@@ -115,7 +117,7 @@
 
     $.ajax({
         type: "POST", // POST রিকোয়েস্ট
-        url: "{{ route('students.store') }}", // রুট URL
+        url: formUrl, // রুট URL
         data: formData, // ফর্ম ডেটা পাঠানো
         processData: false, // প্রক্রিয়াকরণ বন্ধ করলাম
         contentType: false, // Content-Type বন্ধ করলাম

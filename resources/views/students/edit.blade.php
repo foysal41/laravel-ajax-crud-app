@@ -1,4 +1,4 @@
-<form id="createStudentFrom" action="" method="POST"  enctype="multipart/form-data">
+<form id="createStudentFrom" action="{{ route('students.update', $student->id) }}" method="POST"  enctype="multipart/form-data">
     @csrf
     @method('PUT')
 

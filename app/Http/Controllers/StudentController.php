@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
@@ -14,7 +15,7 @@ class StudentController extends Controller
     public function index()
     {
         $data['students'] = Student::all();
-        return view('students.index' , $data);
+        return view('students.index', $data);
     }
 
     /**
@@ -31,35 +32,34 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         //dd('this is store methos');
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'nullable|unique:students,email',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         //এই জায়গা IF Else করব। যদি validate হলে কি করবো আর না হলে কি করব
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
                 'errors' => $validator->messages()
 
             ]);
-        }else
-        {
+        } else {
             $student = new Student();
             $student->name = $request->name;
             $student->email = $request->email;
 
             //photo
-            if($request->file('photo'))
-            {
+            if ($request->file('photo')) {
                 $file = $request->file('photo');
                 $extension = $file->getClientOriginalExtension();
-                $filename = time().'.'.$extension;
-                $file->move(public_path('upload/students'),$filename);
+                $filename = time() . '.' . $extension;
+                $file->move(public_path('upload/students'), $filename);
+                $student->photo = $filename;
             }
 
-            $student->photo = $filename;
+
             $student->save();
 
             return redirect()->route('students.index');
@@ -69,11 +69,7 @@ class StudentController extends Controller
                 'message' => 'Data Inserted Successfully'
 
             ]);
-
         }
-
-
-
     }
 
     /**
@@ -89,8 +85,8 @@ class StudentController extends Controller
      */
     public function edit(string $id)
     {
-        $student= Student::find($id);
-        return view('students.edit' , compact('student'));
+        $student = Student::find($id);
+        return view('students.edit', compact('student'));
     }
 
     /**
@@ -98,7 +94,62 @@ class StudentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        //dd('this  is updpate ');
+
+
+        //dd('this is store methos');
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'nullable|unique:students,email,' .$id,
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+        //এই জায়গা IF Else করব। যদি validate হলে কি করবো আর না হলে কি করব
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'errors' => $validator->messages()
+
+            ]);
+        } else {
+            $student = Student::find($id);
+            $student->name = $request->name;
+            $student->email = $request->email;
+
+            //photo
+            if ($request->file('photo')) {
+                $path = 'upload/students/' . $student->photo;
+
+                //dd($path);
+                if (File::exists($path)) {
+                    File::delete($path);
+                }
+
+                // নতুন ফাইল প্রসেস করা
+                $file = $request->file('photo');
+                $extension = $file->getClientOriginalExtension();
+                $filename = time() . '.' . $extension;
+                $file->move(public_path('upload/students'), $filename);
+
+                // নতুন ফাইলের নাম সংরক্ষণ
+                $student->photo = $filename;
+            } else {
+                // যদি ফাইল না থাকে, পুরোনো ফাইলের নামই রাখা
+                $filename = $student->photo;
+            }
+
+
+            // স্টুডেন্টের অন্যান্য ডেটা আপডেট করা
+            $student->save();
+
+            return redirect()->route('students.index');
+
+            // সফলভাবে রেসপন্স পাঠানো
+            return response()->json([
+                'status' => 200,
+                'message' => 'Data Updated Successfully',
+            ]);
+        }
     }
 
     /**
